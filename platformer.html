@@ -36,8 +36,8 @@
 <body>
 	<div id="container" style='width:100%; height:100%;'>
 	  <div class="cube"></div>
-	  <div class="floor"></div>
-	  <div class="block"></div>
+	  <div class="floor" data-solid="true"></div>
+	  <div class="block" data-solid="true"></div>
 	</div>
 	<script>
 	const speed = 10;
@@ -60,17 +60,19 @@
 	const cube = {
 		x: 0,
 		y: 0,
+		height: 40,
+		width: 40,
 		gravity: 0,
 		speed: 0,
 
 	}
 
 	window.addEventListener("keydown", function(e){
-	  console.log("ki", e.key)
+	  // console.log("ki", e.key)
 	  keyDown(e.key)
 	})
 	window.addEventListener("keyup", function(e){
-	  console.log("ki", e.key)
+	  // console.log("ki", e.key)
 	  keyUp(e.key)
 	})
 
@@ -122,24 +124,48 @@
 	  return cube;
 	}
 
+	function getEl(x, y){
+		const el = document.elementFromPoint(x, y);
+		if (el && el.dataset.solid){
+			return el.getBoundingClientRect();
+		}
+	}
+
 	function render(){
 		window.requestAnimationFrame(render);
 
 		// gravity
-		const bottom = cube.y + 40;
-		if (bottom + cube.gravity <= tempFloorPos){
+		const bottom = cube.y + cube.height;
+		const elementBelow = getEl(cube.x, bottom) || getEl(cube.x + cube.width, bottom);
+		if (elementBelow){
+			if (bottom + cube.gravity <= elementBelow.y){
+				cube.gravity += gravity;
+				cube.y = cube.y + cube.gravity;
+			}
+			else {
+				cube.y += elementBelow.y - bottom;
+				pressedKeys.jump = 0;
+			}
+		} else {
 			cube.gravity += gravity;
 			cube.y = cube.y + cube.gravity;
-		}
-		else {
-			cube.y += tempFloorPos - bottom;
-			pressedKeys.jump = 0;
 		}
 		getCube().style.top = cube.y + "px"
 
 		// speed
 		if (pressedKeys.left || pressedKeys.right){
-			// cube.speed = speed * direction
+			if (pressedKeys.left){
+				const elementLeft = getEl(cube.x - 1, cube.y);
+				if (elementLeft) {
+					cube.speed = 0
+				}
+			}
+			if (pressedKeys.right){
+				const elementRight = getEl(cube.x + cube.width + 1, cube.y);
+				if (elementRight) {
+					cube.speed = 0
+				}
+			}
 		}
 		else {
 			cube.speed = 0
