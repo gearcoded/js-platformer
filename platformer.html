@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<style>
+		html, body {
+			height: 100%;
+			padding: 0px;
+			margin: 0px;
+			background: wheat;
+			/*overflow: hidden;*/
+		}
+		.cube{
+		  background: yellowgreen;
+		  width: 40px;
+		  height: 40px;
+		  position: absolute;
+		  top: 140px;
+		}
+		.floor{
+		  background: gray;
+		  width: 100%;
+		  height: 20px;
+		  position: absolute;
+		  top: 400px;
+		}
+		.block{
+			background: gray;
+		  width: 40px;
+		  height: 40px;
+		  position: absolute;
+		  top: 360px;
+		  left: 160px;
+		}
+	</style>
+</head>
+<body>
+	<div id="container" style='width:100%; height:100%;'>
+	  <div class="cube"></div>
+	  <div class="floor"></div>
+	  <div class="block"></div>
+	</div>
+	<script>
+	const speed = 10;
+	const gravity = 0.98;
+
+	const tempFloorPos = 400;
+
+	const controls = {
+		left: "ArrowLeft",
+		right: "ArrowRight",
+		jump: " ",
+	}
+
+	const pressedKeys = {
+		left: false,
+		right: false,
+		jump: 0
+	}
+
+	const cube = {
+		x: 0,
+		y: 0,
+		gravity: 0,
+		speed: 0,
+
+	}
+
+	window.addEventListener("keydown", function(e){
+	  console.log("ki", e.key)
+	  keyDown(e.key)
+	})
+	window.addEventListener("keyup", function(e){
+	  console.log("ki", e.key)
+	  keyUp(e.key)
+	})
+
+	function keyDown(key){
+	  switch (key){
+	    case controls.left:
+				pressedKeys.left = true;
+				move(-1);
+	      break;
+	    case controls.right:
+				pressedKeys.right = true;
+				move(1);
+	    break;
+
+			case controls.jump:
+			window.requestAnimationFrame(function(){
+				if (pressedKeys.jump < 2){
+					pressedKeys.jump++;
+					jump();
+				}
+			})
+	    break;
+	  }
+	}
+
+	function keyUp(key){
+		switch (key){
+	    case controls.left:
+		     pressedKeys.left = false;
+	      break;
+	    case controls.right:
+				pressedKeys.right = false;
+	    break;
+		}
+	}
+
+	function move(direction){
+		cube.speed = speed * direction
+	}
+	function jump(){
+		cube.gravity = -15
+
+	  //console.log(direction, speed, x, cube.style.left)
+	  // getCube().style.top = x + speed * direction + "px";
+	}
+
+	function getCube(){
+	  const cube = document.querySelector(".cube");
+	  return cube;
+	}
+
+	function render(){
+		window.requestAnimationFrame(render);
+
+		// gravity
+		const bottom = cube.y + 40;
+		if (bottom + cube.gravity <= tempFloorPos){
+			cube.gravity += gravity;
+			cube.y = cube.y + cube.gravity;
+		}
+		else {
+			cube.y += tempFloorPos - bottom;
+			pressedKeys.jump = 0;
+		}
+		getCube().style.top = cube.y + "px"
+
+		// speed
+		if (pressedKeys.left || pressedKeys.right){
+			// cube.speed = speed * direction
+		}
+		else {
+			cube.speed = 0
+		}
+		cube.x += cube.speed;
+	  getCube().style.left = cube.x + "px";
+
+
+	}
+	// setInterval(render, 50)
+	render()
+
+	</script>
+</body>
