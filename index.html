@@ -21,15 +21,15 @@
 		}
 
 		.floor {
-			background: gray;
+			background: #843c25;
 			width: 100%;
 			height: 20px;
 			position: absolute;
 			top: 400px;
 		}
 
-		.block {
-			background: gray;
+		.wall {
+			background: #0dba10;
 			width: 40px;
 			height: 40px;
 			position: absolute;
@@ -48,8 +48,8 @@
 
 
 		const objects = JSON.parse(
-			'{"player":{"className":"cube","x":200,"y":360,"height":40,"width":40,"solid":false,"gravity":0,"speed":0},"blocks":{"className":"block","solid":true,"positions":[{"x":-1,"y":-13,"width":22,"height":451},{"x":657,"y":114,"width":22,"height":325},{"x":846,"y":362,"width":40,"height":40},{"x":160,"y":360,"width":40,"height":40},{"x":181,"y":140,"width":358,"height":42},{"x":-3,"y":434,"width":2430,"height":21},{"x":837,"y":194,"width":358,"height":42}]}}');
-
+'{"player":{"className":"cube","x":510,"y":394,"height":40,"width":40,"solid":false,"gravity":0,"speed":0},"blocks":{"className":"wall","solid":"wall","positions":[{"x":-1,"y":-13,"width":22,"height":451},{"x":657,"y":114,"width":22,"height":325},{"x":846,"y":362,"width":40,"height":40},{"x":160,"y":360,"width":40,"height":40},{"x":847,"y":49,"width":27,"height":120},{"x":658,"y":113,"width":21,"height":39},{"x":1291,"y":319,"width":40,"height":40}]},"floor":{"className":"floor","positions":[{"x":0,"y":434,"width":2430,"height":21},{"x":181,"y":140,"width":358,"height":42},{"x":159,"y":360,"width":40,"height":15},{"x":725,"y":367,"width":40,"height":15},{"x":657,"y":112,"width":22,"height":12},{"x":911,"y":209,"width":439,"height":17},{"x":840,"y":43,"width":40,"height":15},{"x":846,"y":360,"width":40,"height":15},{"x":1291,"y":315,"width":40,"height":15}],"solid":"floor"}}'
+)
 		const cube = objects.player;
 
 

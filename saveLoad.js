@@ -18,12 +18,12 @@ function generateObjects() {
 function addElement(className, position, solid) {
 	const el = document.createElement("div")
 	el.className = className;
-	el.style.left = position.x + "px";
-	el.style.top = position.y + "px";
+	el.style.left = Math.floor(position.x) + "px";
+	el.style.top = Math.floor(position.y) + "px";
 	el.style.height = position.height + "px";
 	el.style.width = position.width + "px";
 	if (solid) {
-		el.setAttribute("data-solid", true)
+		el.setAttribute("data-solid", solid)
 	}
 	const root = document.querySelector("#container");
 	root.appendChild(el)
@@ -46,6 +46,9 @@ function savePositions() {
 			entity.y = position.y;
 			entity.width = position.width;
 			entity.height = position.height;
+			if (el.dataset.solid){
+				entity.solid = el.dataset.solid
+			}
 		}
 	}
 	return JSON.stringify(objects)

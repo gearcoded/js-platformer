@@ -1,5 +1,5 @@
 const speed = 10;
-const gravity = 0.98;
+const gravity = 1;
 
 const tempFloorPos = 400;
 
@@ -166,15 +166,12 @@ function getCube() {
 	return cube;
 }
 
-function getEl(x, y) {
+function getEl(x, y, solidType) {
 	const el = document.elementFromPoint(x, y);
-	if (el && el.dataset.solid) {
+	if (el && el.dataset.solid === solidType) {
 		return el.getBoundingClientRect();
 	}
 }
-
-
-
 
 
 
@@ -183,14 +180,32 @@ function getEl(x, y) {
 
 function playerAction() {
 	// gravity
+	const top = cube.y;
 	const bottom = cube.y + cube.height;
 
+	let elementAbove = null;
+	for (let x = cube.x; x <= cube.x + cube.width; x++) {
+		// for (let y = cube.y; y <= cube.y + cube.height; y+=1) {
+			elementAbove = getEl(x, top, "floor");
+			if (elementAbove){
+				break;
+			}
+		// }
+	}
+	if (elementAbove && pressedKeys.jump){
+		pressedKeys.jump = 0;
+		cube.gravity = 0;
+		// cube.y = elementAbove.y + elementAbove.height;
+	}
+
 	let elementBelow = null;
-	for (let i = cube.x; i <= cube.x + cube.width; i++) {
-		elementBelow = getEl(i, bottom);
-		if (elementBelow){
-			break;
-		}
+	for (let x = cube.x + 1 ; x <= cube.x + cube.width - 1; x++) {
+		// for (let y = cube.y; y <= cube.y + cube.height; y+=1) {
+			elementBelow = getEl(x, bottom, "floor");
+			if (elementBelow){
+				break;
+			}
+		// }
 	}
 	if (elementBelow) {
 		if (bottom + cube.gravity <= elementBelow.y) {
@@ -200,23 +215,24 @@ function playerAction() {
 		else {
 			cube.y += elementBelow.y - bottom;
 			pressedKeys.jump = 0;
+			cube.gravity = 0;
 		}
 	} else {
 		cube.gravity += gravity;
 		cube.y = cube.y + cube.gravity;
 	}
-	getCube().style.top = cube.y + "px"
+	getCube().style.top = Math.floor(cube.y) + "px"
 
 	// speed
 	if (pressedKeys.left || pressedKeys.right) {
 		if (pressedKeys.left) {
-			const elementLeft = getEl(cube.x - 1, cube.y);
+			const elementLeft = getEl(cube.x - 1, cube.y, "wall");
 			if (elementLeft) {
 				cube.speed = 0
 			}
 		}
 		if (pressedKeys.right) {
-			const elementRight = getEl(cube.x + cube.width + 1, cube.y);
+			const elementRight = getEl(cube.x + cube.width + 1, cube.y, "wall");
 			if (elementRight) {
 				cube.speed = 0
 			}
@@ -226,5 +242,5 @@ function playerAction() {
 		cube.speed = 0
 	}
 	cube.x += cube.speed;
-	getCube().style.left = cube.x + "px";
+	getCube().style.left = Math.floor(cube.x) + "px";
 }
